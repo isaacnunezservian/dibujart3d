@@ -1,15 +1,11 @@
 import { BentoGrid, BentoGridItem } from "../components/ui/grid.tsx";
 import { TypewriterEffect } from "../components/ui/typewritter.tsx";
 
-import {
-  IconArrowWaveRightUp,
-  IconBoxAlignRightFilled,
-  IconBoxAlignTopLeft,
-  IconClipboardCopy,
-  IconFileBroken,
-  IconSignature,
-  IconTableColumn,
-} from "@tabler/icons-react";
+// import {
+//   IconArrowWaveRightUp,
+//   IconSignature,
+//   IconTableColumn,
+// } from "@tabler/icons-react";
 
 
   const words = [
@@ -81,10 +77,7 @@ const items = [
   },
   {
     title: "Bluey",
-    description:
-      "Understand the impact of effective communication in our lives.",
     header: "https://lazefqgizrtgsevcmqln.supabase.co/storage/v1/object/public/tigreimg/Bluey.jpg",
-    icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
   },
     {
     title: "Colapinto",
@@ -99,9 +92,7 @@ const items = [
   
   {
     title: "Bebidas",
-    description: "Join the quest for understanding and enlightenment.",
     header: "https://lazefqgizrtgsevcmqln.supabase.co/storage/v1/object/public/tigreimg/bebidas.jpg",
-    icon: <IconArrowWaveRightUp className="h-4 w-4 text-neutral-500" />,
   },
   {
     title: "Brawl Stars",
@@ -109,10 +100,7 @@ const items = [
   },
   {
     title: "Baby Shark",
-    description: "Baby Shark",
     header: "https://lazefqgizrtgsevcmqln.supabase.co/storage/v1/object/public/tigreimg/babyshark.jpg"
-,
-    icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
   },
   {
             title: "Disney",
