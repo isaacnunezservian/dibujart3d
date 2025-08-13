@@ -73,7 +73,7 @@ type CategoryResponse = {
 
   const handleCategoryClick = (id: number) => {
     console.log('Categoría seleccionada:', id);
-    axios.get(`http://192.168.0.80:3001/api/categories/${id}`)
+  axios.get(`https://dibujart3d.onrender.com/api/categories/${id}`)
       .then(response => {
         setSelectedCategory(response.data.data);
         console.log('Productos de la categoría seleccionada:', response.data.data);
@@ -85,7 +85,7 @@ type CategoryResponse = {
   };
 
   useEffect(() => {
-    axios.get('http://192.168.0.80:3001/api/categories')
+  axios.get('https://dibujart3d.onrender.com/api/categories')
       .then(response => {
         setCategories(response.data.data);
         console.log('Categorías obtenidas:', response.data);
