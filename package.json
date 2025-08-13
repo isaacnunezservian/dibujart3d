@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@material-tailwind/react": "^2.1.10",
     "@tabler/icons-react": "^3.34.1",
+    "axios": "^1.11.0",
     "clsx": "^2.1.1",
+    "heroicons": "^2.2.0",
     "motion": "^12.23.12",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -32,5 +36,9 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4"
+  },
+  "overrides": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }
