@@ -1,11 +1,4 @@
 import { BentoGrid,BentoGridItem } from "../components/ui/grid.tsx";
-import { TypewriterEffect } from "../components/ui/typewritter.tsx";
-// import {
-//   IconArrowWaveRightUp,
-//   IconSignature,
-//   IconTableColumn,
-// } from "@tabler/icons-react";
-// Puedes colocar este código en cualquier componente React, por ejemplo en src/components/CategoryList.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ExpandableCardDemo } from "./ui/modalwindow.tsx";
@@ -18,24 +11,6 @@ import {
 } from "@material-tailwind/react";
 
 
-  const words = [
-    {
-      text: "Inventario",
-    },
-    {
-      text: "de",
-    },
-    {
-      text: "Productos ",
-    },
-    // {
-    //   text: "Caracteristicas",
-    // },
-    {
-      text: "DibujArt3D",
-      className: "text-blue-500 dark:text-blue-500",
-    },
-  ];
 
 export default function Hero() {
 
@@ -96,20 +71,7 @@ type CategoryResponse = {
   }, []);
   return (
   <div>
-    <div className="flex flex-col items-center justify-center h-[40rem] ">
-      <p className="mb-10 text-base text-neutral-600 dark:text-neutral-200">
-        Cada producto con sus caracteristicas
-      </p>
-      <TypewriterEffect words={words} />
-      <div className="flex flex-col mt-10 space-x-0 space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-        <button className="w-40 h-10 text-sm text-white bg-black border border-transparent rounded-xl dark:border-white">
-          Buscar un producto
-        </button>
-        <button className="w-40 h-10 text-sm text-black bg-white border border-black rounded-xl">
-          Futuro comando de voz
-        </button>
-      </div>
-    </div>
+
     <BentoGrid className="max-w-4xl mx-auto">
       {categories.map((categoria, i) => (
         // <div key={i} onClick={() => handleCategoryClick(categoria.id)}>
@@ -158,21 +120,6 @@ type CategoryResponse = {
     </Dialog>
       <p></p>
 
-    {/* {selectedCategory && (
-      <div>
-        <h2>{selectedCategory.title}</h2>
-        <p>{selectedCategory.header}</p>
-        <ul>
-          {selectedCategory.products.map(product => (
-            <li key={product.id}>
-              <h3>{product.name}</h3>
-              <p>Colores: {product.colors.join(", ")}</p>
-              <p>{product.id}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )} */}
   </div>
 );
 }
