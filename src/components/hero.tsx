@@ -1,3 +1,5 @@
+https://tigre-backend-195623852400.southamerica-east1.run.app
+
 import { BentoGrid,BentoGridItem } from "../components/ui/grid.tsx";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -48,7 +50,7 @@ type CategoryResponse = {
 
   const handleCategoryClick = (id: number) => {
     console.log('Categoría seleccionada:', id);
-  axios.get(`https://dibujart3d.onrender.com/api/categories/${id}`)
+  axios.get(`https://tigre-backend-195623852400.southamerica-east1.run.app/api/categories/${id}`)
       .then(response => {
         setSelectedCategory(response.data.data);
         console.log('Productos de la categoría seleccionada:', response.data.data);
@@ -60,7 +62,7 @@ type CategoryResponse = {
   };
 
   useEffect(() => {
-  axios.get('https://dibujart3d.onrender.com/api/categories')
+  axios.get('https://tigre-backend-195623852400.southamerica-east1.run.app/api/categories')
       .then(response => {
         setCategories(response.data.data);
         console.log('Categorías obtenidas:', response.data);

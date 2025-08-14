@@ -49,7 +49,7 @@ export default function Busqueda() {
 const [active, setActive] = useState<string[] | null>(null);
 
   useEffect(() => {
-    axios.get<ApiResponse>(`https://dibujart3d.onrender.com/api/products/`)
+    axios.get<ApiResponse>(`https://tigre-backend-195623852400.southamerica-east1.run.app/api/products/`)
     .then(response => {
       const products = response.data.data || response.data; // Manejar ambas estructuras
       setAllProducts(products);
