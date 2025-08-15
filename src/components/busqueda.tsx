@@ -1,9 +1,10 @@
-import { TypewriterEffect } from "../components/ui/typewritter.tsx";
+import { TypewriterEffectPremium } from "../components/ui/typewritter.tsx";
 import Search from "./ui/search.jsx";
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import { motion } from "motion/react";
 import { PaperAirplaneIcon } from "@heroicons/react/16/solid";
+import logo from "../assets/Logo.svg"
 
 // Tipo para los productos
 type Product = {
@@ -32,26 +33,23 @@ const words = [
   {
     text: "Productos ",
   },
-  // {
-  //   text: "Caracteristicas",
-  // },
   {
     text: "DibujArt3D",
-    className: "text-blue-500 dark:text-blue-500",
+    className: "text-off-red dark:text-off-red-400", // Cambié de azul a tu rojo característico
   },
 ];
 
 export default function Busqueda() {
 
-  const [allProducts, setAllProducts] = useState<Product[]>([]); // Productos originales
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // Productos filtrados
+  const [allProducts, setAllProducts] = useState<Product[]>([]); 
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); 
   const [busqueda, setBusqueda] = useState("");
-const [active, setActive] = useState<string[] | null>(null);
+  const [active, setActive] = useState<string[] | null>(null);
 
   useEffect(() => {
     axios.get<ApiResponse>(`https://tigre-backend-195623852400.southamerica-east1.run.app/api/products/`)
     .then(response => {
-      const products = response.data.data || response.data; // Manejar ambas estructuras
+      const products = response.data.data || response.data;
       setAllProducts(products);
       console.log('Productos obtenidos:', products);
     })
@@ -86,12 +84,13 @@ const [active, setActive] = useState<string[] | null>(null);
 
   return (
 
-    <div className="flex flex-col items-center justify-center min-h-screen py-10">
+    // Fondo con gradiente sutil usando tu paleta
+    <div className="flex flex-col items-center justify-center py-10 bg-gradient-to-br from-white via-hunyadi-yellow-900 to-white dark:from-night dark:via-night-400 dark:to-night">
       <div className="flex flex-col items-center justify-center mb-10">
-        <p className="mb-10 text-base text-neutral-600 dark:text-neutral-200">
-          Cada producto con sus caracteristicas
-        </p>
-        <TypewriterEffect words={words} />
+        <div>
+          <img src={logo} alt="Logo" className="w-24 h-24 my-8 md:w-32 md:h-32" />
+        </div>
+        <TypewriterEffectPremium words={words} />
         <div className="flex flex-col mt-10 space-x-0 space-y-4 md:flex-row md:space-y-0 md:space-x-4">
           <Search busqueda={busqueda} setBusqueda={setBusqueda} />
         </div>
@@ -100,38 +99,45 @@ const [active, setActive] = useState<string[] | null>(null);
       {/* Mostrar resultados de búsqueda */}
       <div className="w-full max-w-6xl px-4">
         {busqueda.trim() !== "" && (
-          <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mb-4 text-sm text-night-600 dark:text-night-400">
             Mostrando {filteredProducts.length} resultado(s) para "{busqueda}"
           </p>
         )}
 
         {busqueda.trim() !== "" && (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProducts.map((producto) => (
-            <div key={producto.id} className="p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700" onClick={() => handleClick(producto.id, producto.colors)}>
-              <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
-                {producto.name}
-              </h3>
-              <div className="mb-3">
-                <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Colores disponibles:</p>
-                <div className="flex flex-wrap gap-2">
-                  {producto.colors.map((color, index) => (
-                    <span key={index} className="px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-200">
-                      {color}
-                    </span>
-                  ))}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredProducts.map((producto) => (
+              <div 
+                key={producto.id} 
+                className="p-6 transition-all duration-300 transform bg-white border-2 shadow-lg cursor-pointer border-hunyadi-yellow-300 rounded-xl hover:shadow-xl hover:scale-105 dark:bg-night-800 dark:border-night-600" 
+                onClick={() => handleClick(producto.id, producto.colors)}
+              >
+                <h3 className="mb-3 text-lg font-bold text-black dark:text-white">
+                  {producto.name}
+                </h3>
+                <div className="mb-3">
+                  <p className="mb-2 text-sm font-medium text-night-600 dark:text-night-400">Colores del producto</p>
+                  <div className="flex flex-wrap gap-2">
+                    {producto.colors.map((color, index) => (
+                      <span 
+                        key={index} 
+                        className="px-3 py-1 text-xs font-semibold text-white transition-shadow duration-200 rounded-full shadow-md bg-gradient-to-r from-poppy to-off-red hover:shadow-lg"
+                      >
+                        {color}
+                      </span>
+                    ))}
+                  </div>
                 </div>
+                <p className="text-xs text-night-500 dark:text-night-400">
+                  ID: {producto.id} • Categoría: {producto.categoryId}
+                </p>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                ID: {producto.id} • Categoría: {producto.categoryId}
-              </p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
         )}
        
         {active && Array.isArray(active) ? (
-    <div className="fixed inset-0  grid place-items-center z-[100]">
+          <div data-results-section className="fixed inset-0 grid place-items-center z-[100] bg-night-900/50 backdrop-blur-sm">
             <motion.button
               animate={{
                 opacity: 1,
@@ -142,52 +148,53 @@ const [active, setActive] = useState<string[] | null>(null);
                   duration: 0.05,
                 },
               }}
-              className="absolute flex items-center justify-center w-10 h-10 bg-blue-200 rounded-full top-10 right-10"
+              className="absolute z-50 flex items-center justify-center w-10 h-10 transition-transform duration-200 rounded-full shadow-lg bg-gradient-to-r from-off-red to-poppy top-4 right-4 md:top-6 md:right-6 hover:scale-110"
               onClick={() => setActive(null)}
+              aria-label="Cerrar modal"
+              title="Cerrar (Esc)"
             >
               <CloseIcon />
             </motion.button>
             <motion.div
-              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  min-h-[300px] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] min-h-[300px] flex flex-col bg-white dark:bg-night-900 sm:rounded-3xl overflow-hidden border-2 border-hunyadi-yellow-400 shadow-2xl"
             >
+              <div className="p-4 ">
+                <h2 className="text-xl font-bold text-center text-black">
+                  Colores del producto
+                </h2>
+              </div>
               <div>
-                <div className="flex items-center justify-center p-4">
-                  <div className="">
+                <div className="flex items-center justify-center p-6">
+                  <div className="w-full">
                     <motion.h3
-                      className="font-bold text-neutral-700 dark:text-neutral-200"
+                      className="font-bold text-night-800 dark:text-night-200"
                     >
-                        <ul className="flex flex-col gap-3 mt-4">
+                      <ul className="flex flex-col gap-4 mt-4">
                         {active.map((color) => (
                           <li
                             key={color}
-                            className="flex items-center justify-center gap-3 px-4 py-2 transition bg-gray-100 rounded-lg shadow dark:bg-neutral-800 hover:bg-blue-100 dark:hover:bg-blue-900"
+                            className="flex items-center justify-center gap-4 px-6 py-4 transition-all duration-300 border shadow-md bg-gradient-to-r from-hunyadi-yellow-100 to-hunyadi-yellow-200 rounded-xl hover:shadow-lg hover:scale-105 dark:from-night-800 dark:to-night-700 border-hunyadi-yellow-300 dark:border-night-600"
                           >
-                            <PaperAirplaneIcon className="w-5 h-5 text-gray-500" />
-                            <span className="text-base font-semibold text-center uppercase text-neutral-700 dark:text-neutral-200">{color}</span>
+                            <PaperAirplaneIcon className="w-6 h-6 text-poppy" />
+                            <span className="text-lg font-bold text-center text-white uppercase dark:text-night-200">
+                              {color}
+                            </span>
                           </li>
                         ))}
                       </ul>
                     </motion.h3>
                   </div>
                 </div>
-                <div className="relative px-4 pt-4">
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
-                  >
-                  </motion.div>
-                </div>
               </div>
             </motion.div>
           </div>
         ) : null}
-        
 
         {filteredProducts.length === 0 && busqueda.trim() !== "" && (
           <div className="py-10 text-center">
-            <p className="text-gray-600 dark:text-gray-400">No se encontraron productos que coincidan con "{busqueda}"</p>
+            <p className="text-lg font-medium text-night-600 dark:text-night-400">
+              No se encontraron productos que coincidan con "{busqueda}"
+            </p>
           </div>
         )}
       </div>
@@ -219,7 +226,7 @@ export const CloseIcon = () => {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="w-4 h-4 text-black"
+      className="w-6 h-6 font-bold text-white"
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M18 6l-12 12" />
