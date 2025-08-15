@@ -94,7 +94,7 @@ export function ExpandableCardDemo({ productos}: ExpandableCardDemoProps) {
                 <div className="w-full">
                   <motion.h3 className="font-bold text-night-700 dark:text-night-200">
                     <ul className="flex flex-col gap-4 mt-4">
-                      {active.map((color, index) => (
+                      {active.map((color) => (
                         <li
                           key={color}
                           className="flex items-center justify-center gap-4 px-6 py-4 bg-gradient-to-r from-hunyadi-yellow-100 to-hunyadi-yellow-200 dark:from-night-800 dark:to-night-700 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 border border-hunyadi-yellow-300 dark:border-night-600"
