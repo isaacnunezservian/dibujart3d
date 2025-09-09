@@ -69,3 +69,54 @@ export const deleteCategory = asyncHandler(async (req: Request, res: Response) =
     message: 'Category deleted successfully'
   });
 });
+
+// Crear categoría rápida desde el formulario de producto
+export const createCategoryQuick = asyncHandler(async (req: Request, res: Response) => {
+  // Validación básica
+  if (!req.body.title) {
+    return res.status(400).json({
+      success: false,
+      error: 'El título de la categoría es requerido'
+    });
+  }
+  
+  // Manejar archivo de imagen si existe
+  let header: string | null = null;
+  
+  if (req.file) {
+    try {
+      const { uploadImageToSupabase } = require('../middlewares/uploadMiddleware');
+      header = await uploadImageToSupabase(req.file, 'categories');
+      logger.info(`Category image uploaded: ${header}`);
+    } catch (error) {
+      logger.error('Error uploading category image:', error as Error);
+      // Continuar sin imagen
+    }
+  }
+  
+  const validatedData = createCategorySchema.parse({
+    title: req.body.title,
+    header
+  });
+  
+  try {
+    const category = await categoryService.createCategory(validatedData);
+    
+    logger.info(`Category created quickly: ${category.title}`);
+    
+    res.status(201).json({
+      success: true,
+      data: category,
+      message: 'Category created successfully'
+    });
+  } catch (error: any) {
+    // Manejar error de título duplicado
+    if (error.code === 'P2002' && error.meta?.target?.includes('title')) {
+      return res.status(409).json({
+        success: false,
+        error: 'Ya existe una categoría con ese título'
+      });
+    }
+    throw error;
+  }
+});

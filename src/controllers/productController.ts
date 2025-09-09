@@ -58,9 +58,12 @@ export const createProduct = asyncHandler(async (req: Request, res: Response) =>
     }
   }
   
-  // ✅ NUEVO: Convert categoryId from string to number
-  if (typeof req.body.categoryId === 'string') {
+  // ✅ NUEVO: Convert categoryId from string to number if provided
+  if (typeof req.body.categoryId === 'string' && req.body.categoryId.trim() !== '') {
     parsedBody.categoryId = parseInt(req.body.categoryId, 10);
+  } else {
+    // Eliminar categoryId si está vacío para que se cree una categoría automáticamente
+    delete parsedBody.categoryId;
   }
   
   // ✅ PROCESAR IMAGEN SI EXISTE

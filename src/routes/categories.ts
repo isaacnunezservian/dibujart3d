@@ -4,8 +4,10 @@ import {
   getCategoryById,
   createCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  createCategoryQuick
 } from '../controllers/categoryController';
+import { upload } from '../middlewares/uploadMiddleware';
 
 const router = Router();
 
@@ -17,6 +19,9 @@ router.get('/:id', getCategoryById);
 
 // POST /categories - Create new category
 router.post('/', createCategory);
+
+// POST /categories/quick - Crear categoría rápidamente desde el formulario de producto
+router.post('/quick', upload.single('image'), createCategoryQuick);
 
 // PUT /categories/:id - Update category
 router.put('/:id', updateCategory);

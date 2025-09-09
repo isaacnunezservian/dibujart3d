@@ -11,6 +11,8 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:deploy": "prisma migrate deploy",
+    "update-images": "ts-node src/scripts/updateProductImages.ts",
+    "cleanup:categories": "ts-node src/scripts/deleteEmptyCategories.ts",
     "test": "jest",
     "test:watch": "jest --watch"
   },
