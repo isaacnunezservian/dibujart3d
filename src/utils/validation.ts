@@ -19,13 +19,15 @@ export const categoryIdParamsSchema = z.object({
 export const createProductSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name too long'),
   colors: z.array(z.string()).min(1, 'At least one color is required'),
-  categoryId: z.number().int().positive('Category ID must be a positive integer')
+  categoryId: z.number().int().positive('Category ID must be a positive integer'),
+  imagePath: z.string().url().nullable().optional() // ✅ Permitir URLs de imagen o null
 });
 
 export const updateProductSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name too long').optional(),
   colors: z.array(z.string()).min(1, 'At least one color is required').optional(),
-  categoryId: z.number().int().positive('Category ID must be a positive integer').optional()
+  categoryId: z.number().int().positive('Category ID must be a positive integer').optional(),
+  imagePath: z.string().url().nullable().optional() // ✅ Opcional para updates
 });
 
 export const productParamsSchema = z.object({

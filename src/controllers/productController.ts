@@ -7,6 +7,7 @@ import {
 } from '../utils/validation';
 import { asyncHandler, createError } from '../middlewares/errorMiddleware';
 import { logger } from '../utils/logger';
+import { uploadImageToSupabase } from '../middlewares/uploadMiddleware';
 
 export const getAllProducts = asyncHandler(async (req: Request, res: Response) => {
   const products = await productService.getAllProducts();
@@ -62,6 +63,27 @@ export const createProduct = asyncHandler(async (req: Request, res: Response) =>
     parsedBody.categoryId = parseInt(req.body.categoryId, 10);
   }
   
+  // ✅ PROCESAR IMAGEN SI EXISTE
+  let imagePath: string | null = null;
+  
+  if (req.file) {
+    try {
+      console.log('📸 Processing image upload...');
+      imagePath = await uploadImageToSupabase(req.file, 'productos');
+      console.log('✅ Image uploaded successfully:', imagePath);
+    } catch (error) {
+      console.error('❌ Error uploading image:', error);
+      // No interrumpir la creación del producto, solo continuar sin imagen
+      console.log('⚠️ Continuing without image due to upload error');
+      imagePath = null;
+    }
+  } else {
+    console.log('ℹ️ No image file provided');
+  }
+  
+  // ✅ AGREGAR IMAGEPATH AL CUERPO PARSEADO
+  parsedBody.imagePath = imagePath;
+  
   console.log('Parsed body before validation:', parsedBody);
   
   try {
@@ -107,6 +129,18 @@ export const updateProduct = asyncHandler(async (req: Request, res: Response) =>
   // ✅ NUEVO: Convert categoryId from string to number
   if (typeof req.body.categoryId === 'string') {
     parsedBody.categoryId = parseInt(req.body.categoryId, 10);
+  }
+  
+  // ✅ PROCESAR IMAGEN SI HAY UNA NUEVA
+  if (req.file) {
+    try {
+      console.log('📸 Processing image update...');
+      parsedBody.imagePath = await uploadImageToSupabase(req.file, 'productos');
+      console.log('✅ Image uploaded successfully:', parsedBody.imagePath);
+    } catch (error) {
+      console.error('❌ Error uploading image:', error);
+      // No agregar imagePath si falla
+    }
   }
   
   console.log('Parsed body before validation:', parsedBody);

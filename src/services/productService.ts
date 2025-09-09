@@ -39,15 +39,15 @@ export class ProductService {
     }
   }
 
-  // ✅ SIMPLIFICADO: Solo datos, sin imágenes
+  // ✅ UPDATED: Manejar imagePath de Supabase
   async createProduct(data: CreateProductData) {
     try {
       const product = await prisma.product.create({
         data: {
           name: data.name,
           colors: data.colors,
-          imagePath: null,
-          categoryId: data.categoryId // <-- NUEVO
+          imagePath: data.imagePath || null, // ✅ URL de Supabase o null
+          categoryId: data.categoryId
         }
       });
 
@@ -59,7 +59,7 @@ export class ProductService {
     }
   }
 
-  // ✅ SIMPLIFICADO: Solo actualizar datos, sin imágenes
+  // ✅ UPDATED: Permitir actualizar imagePath
   async updateProduct(id: number, data: UpdateProductData) {
     try {
       // Verificar que existe
@@ -70,7 +70,8 @@ export class ProductService {
         data: {
           ...(data.name && { name: data.name }),
           ...(data.colors && { colors: data.colors }),
-          ...(data.categoryId && { categoryId: data.categoryId }) // <-- NUEVO
+          ...(data.categoryId && { categoryId: data.categoryId }),
+          ...(data.imagePath !== undefined && { imagePath: data.imagePath }) // ✅ Actualizar solo si se proporciona
         }
       });
 
