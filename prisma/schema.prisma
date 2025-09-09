@@ -13,8 +13,8 @@ datasource db {
 
 model Category {
   id       Int       @id @default(autoincrement())
-  title    String    @unique  // ✅ Ya tienes unicidad aquí
-  header   String
+  title    String    @unique
+  header   String?   // ✅ Agregar ? para hacerlo opcional
   products Product[]
 }
 

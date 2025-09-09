@@ -34,60 +34,100 @@ export const getProductById = asyncHandler(async (req: Request, res: Response) =
 });
 
 export const createProduct = asyncHandler(async (req: Request, res: Response) => {
-  // Parse colors from string if needed
+  // ✅ DEBUGGING MEJORADO CON MULTER
+  console.log('=== MULTER DEBUG INFO ===');
+  console.log('Headers:', req.headers);
+  console.log('Content-Type:', req.headers['content-type']);
+  console.log('Raw request body:', req.body);
+  console.log('Files:', req.file);
+  console.log('Body keys:', Object.keys(req.body));
+  console.log('Body values:', Object.values(req.body));
+  console.log('========================');
+  
+  // Parse data from FormData strings
   let parsedBody = { ...req.body };
+  
+  // Parse colors from JSON string if needed
   if (typeof req.body.colors === 'string') {
     try {
       parsedBody.colors = JSON.parse(req.body.colors);
     } catch (error) {
-      // If JSON parsing fails, treat as comma-separated string
+      // Fallback to comma-separated string
       parsedBody.colors = req.body.colors.split(',').map((color: string) => color.trim());
     }
   }
   
-  const validatedData = createProductSchema.parse(parsedBody);
+  // ✅ NUEVO: Convert categoryId from string to number
+  if (typeof req.body.categoryId === 'string') {
+    parsedBody.categoryId = parseInt(req.body.categoryId, 10);
+  }
   
-  const product = await productService.createProduct(
-    validatedData
-  );
+  console.log('Parsed body before validation:', parsedBody);
   
-  logger.info(`Product created: ${product.name}`);
-  
-  res.status(201).json({
-    success: true,
-    data: product,
-    message: 'Product created successfully'
-  });
+  try {
+    const validatedData = createProductSchema.parse(parsedBody);
+    console.log('✅ Validation successful:', validatedData);
+    
+    const product = await productService.createProduct(validatedData);
+    
+    logger.info(`Product created: ${product.name}`);
+    
+    res.status(201).json({
+      success: true,
+      data: product,
+      message: 'Product created successfully'
+    });
+  } catch (validationError) {
+    console.error('❌ Validation error:', validationError);
+    throw validationError;
+  }
 });
 
 export const updateProduct = asyncHandler(async (req: Request, res: Response) => {
   const { id } = productParamsSchema.parse(req.params);
   
-  // Parse colors from string if needed
+  console.log('=== UPDATE PRODUCT DEBUG ===');
+  console.log('Raw request body:', req.body);
+  console.log('Files:', req.file);
+  console.log('============================');
+  
+  // Parse data from FormData strings
   let parsedBody = { ...req.body };
+  
+  // Parse colors from JSON string if needed
   if (typeof req.body.colors === 'string') {
     try {
       parsedBody.colors = JSON.parse(req.body.colors);
     } catch (error) {
-      // If JSON parsing fails, treat as comma-separated string
+      // Fallback to comma-separated string
       parsedBody.colors = req.body.colors.split(',').map((color: string) => color.trim());
     }
   }
   
-  const validatedData = updateProductSchema.parse(parsedBody);
+  // ✅ NUEVO: Convert categoryId from string to number
+  if (typeof req.body.categoryId === 'string') {
+    parsedBody.categoryId = parseInt(req.body.categoryId, 10);
+  }
   
-  const product = await productService.updateProduct(
-    id,
-    validatedData
-  );
+  console.log('Parsed body before validation:', parsedBody);
   
-  logger.info(`Product updated: ${product.name}`);
-  
-  res.json({
-    success: true,
-    data: product,
-    message: 'Product updated successfully'
-  });
+  try {
+    const validatedData = updateProductSchema.parse(parsedBody);
+    console.log('✅ Update validation successful:', validatedData);
+    
+    const product = await productService.updateProduct(id, validatedData);
+    
+    logger.info(`Product updated: ${product.name}`);
+    
+    res.json({
+      success: true,
+      data: product,
+      message: 'Product updated successfully'
+    });
+  } catch (validationError) {
+    console.error('❌ Update validation error:', validationError);
+    throw validationError;
+  }
 });
 
 export const deleteProduct = asyncHandler(async (req: Request, res: Response) => {

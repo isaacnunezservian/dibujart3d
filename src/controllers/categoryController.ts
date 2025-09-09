@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import { categoryService } from '../services/categoryService';
-import { asyncHandler } from '../middlewares/asyncHandler'; // ✅ Ahora existe
+import { asyncHandler } from '../middlewares/asyncHandler';
 import { logger } from '../utils/logger';
+import { 
+  createCategorySchema, 
+  updateCategorySchema, 
+  categoryIdParamsSchema 
+} from '../utils/validation';
 
 export const getAllCategories = asyncHandler(async (req: Request, res: Response) => {
   const categories = await categoryService.getAllCategories();
@@ -14,7 +19,7 @@ export const getAllCategories = asyncHandler(async (req: Request, res: Response)
 });
 
 export const getCategoryById = asyncHandler(async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
+  const { id } = categoryIdParamsSchema.parse(req.params);
   const category = await categoryService.getCategoryById(id);
   
   res.json({
@@ -24,9 +29,9 @@ export const getCategoryById = asyncHandler(async (req: Request, res: Response) 
 });
 
 export const createCategory = asyncHandler(async (req: Request, res: Response) => {
-  const { title, header } = req.body;
+  const validatedData = createCategorySchema.parse(req.body);
   
-  const category = await categoryService.createCategory({ title, header });
+  const category = await categoryService.createCategory(validatedData);
   
   logger.info(`Category created: ${category.title}`);
   

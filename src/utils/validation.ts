@@ -1,5 +1,20 @@
 import { z } from 'zod';
 
+// Category validation schemas
+export const createCategorySchema = z.object({
+  title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
+  header: z.string().optional() // Campo opcional para imagen
+});
+
+export const updateCategorySchema = z.object({
+  title: z.string().min(1, 'Title is required').max(255, 'Title too long').optional(),
+  header: z.string().optional() // Campo opcional para imagen
+});
+
+export const categoryIdParamsSchema = z.object({
+  id: z.string().regex(/^\d+$/, 'Invalid category ID').transform(Number),
+});
+
 // Product validation schemas
 export const createProductSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name too long'),
@@ -22,7 +37,12 @@ export const categoryParamsSchema = z.object({
   categoryId: z.string().regex(/^\d+$/, 'Invalid category ID').transform(Number),
 });
 
-// Type exports
+// Type exports for categories
+export type CreateCategoryData = z.infer<typeof createCategorySchema>;
+export type UpdateCategoryData = z.infer<typeof updateCategorySchema>;
+export type CategoryIdParams = z.infer<typeof categoryIdParamsSchema>;
+
+// Type exports for products
 export type CreateProductData = z.infer<typeof createProductSchema>;
 export type UpdateProductData = z.infer<typeof updateProductSchema>;
 export type ProductParams = z.infer<typeof productParamsSchema>;

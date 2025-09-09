@@ -1,18 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
 import { createError } from '../utils/createError';
+import { CreateCategoryData, UpdateCategoryData } from '../utils/validation';
 
 const prisma = new PrismaClient();
-
-interface CreateCategoryData {
-  title: string;
-  header: string;
-}
-
-interface UpdateCategoryData {
-  title?: string;
-  header?: string;
-}
 
 export class CategoryService {
   async getAllCategories() {
@@ -57,7 +48,7 @@ export class CategoryService {
       const category = await prisma.category.create({
         data: {
           title: data.title,
-          header: data.header
+          header: data.header ?? null
         }
       });
 

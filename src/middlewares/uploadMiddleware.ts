@@ -1,6 +1,5 @@
-// ⏸️ TEMPORALMENTE COMENTADO - Volveremos a usar cuando agreguemos imágenes
-/*
 import multer from 'multer';
+import { Request } from 'express';
 
 // Configure multer for memory storage
 const storage = multer.memoryStorage();
@@ -21,17 +20,9 @@ export const upload = multer({
   fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
+    fieldSize: 2 * 1024 * 1024  // 2MB for text fields
   },
 });
 
 // Single file upload middleware
 export const uploadSingle = upload.single('image');
-*/
-
-import { Request } from 'express';
-
-
-// ✅ TEMPORAL: Middleware dummy para no romper las importaciones
-export const uploadSingle = (req: any, res: any, next: any) => {
-  next(); // Solo pasa al siguiente middleware, no hace nada
-};

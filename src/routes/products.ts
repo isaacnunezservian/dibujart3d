@@ -7,7 +7,7 @@ import {
   deleteProduct,
   getProductsByCategory // <-- NUEVO
 } from '../controllers/productController';
-// import { uploadSingle } from '../middlewares/uploadMiddleware';
+import { uploadSingle } from '../middlewares/uploadMiddleware';
 
 const router = Router();
 
@@ -20,11 +20,11 @@ router.get('/:id', getProductById);
 // GET /products/category/:categoryId - Get products by category
 router.get('/category/:categoryId', getProductsByCategory); // <-- NUEVO
 
-// POST /products - Create new product (with categoryId)
-router.post('/', createProduct);
+// POST /products - Create new product (with categoryId and multer for form-data)
+router.post('/', uploadSingle, createProduct);
 
-// PUT /products/:id - Update product (with categoryId)
-router.put('/:id', updateProduct);
+// PUT /products/:id - Update product (with categoryId and multer for form-data)
+router.put('/:id', uploadSingle, updateProduct);
 
 // DELETE /products/:id - Delete product
 router.delete('/:id', deleteProduct);
