@@ -67,20 +67,41 @@ const ProductForm = ({
     setError('')
     setLoading(true)
     
+    // Validaciones mejoradas
+    if (!name.trim()) {
+      setError('El nombre del producto es obligatorio')
+      setLoading(false)
+      return
+    }
+    
     if (colors.length === 0) {
       setError('Debes agregar al menos un color')
       setLoading(false)
       return
     }
+    
+    if (categoryId === 0) {
+      setError('Debes seleccionar una categoría')
+      setLoading(false)
+      return
+    }
+    
+    // Imagen es opcional ahora
 
     try {
       const formData = new FormData()
-      formData.append('name', name)
+      formData.append('name', name.trim())
       formData.append('colors', JSON.stringify(colors))
       formData.append('categoryId', categoryId.toString())
       
       if (image) {
         formData.append('image', image)
+      }
+      
+      // Log para depuración
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
       }
       
       let response
@@ -102,11 +123,15 @@ const ProductForm = ({
       }
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
-        setError(err.response.data.message || 'Error en la solicitud')
+        // Log más detallado del error
+        console.error('Error response:', err.response.data);
+        console.error('Error status:', err.response.status);
+        console.error('Error headers:', err.response.headers);
+        setError(err.response.data.message || `Error ${err.response.status}: ${err.response.statusText}`)
       } else {
         setError('Error de conexión')
       }
-      console.error(err)
+      console.error('Full error object:', err)
     } finally {
       setLoading(false)
     }
@@ -207,7 +232,7 @@ const ProductForm = ({
         
         <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Imagen del producto
+            Imagen del producto (opcional)
           </label>
           <div className="mt-1 flex items-center space-x-4">
             {previewUrl && (
@@ -227,7 +252,7 @@ const ProductForm = ({
                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-poppy file:text-white hover:file:bg-off-red transition-all"
               />
               <p className="mt-1 text-xs text-gray-500">
-                PNG, JPG, GIF hasta 5MB
+                PNG, JPG, GIF hasta 5MB (opcional)
               </p>
             </div>
           </div>
