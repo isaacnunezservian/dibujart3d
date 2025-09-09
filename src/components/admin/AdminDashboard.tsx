@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   const [showProductForm, setShowProductForm] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
 
-  const API_URL = 'https://tigre-backend-195623852400.southamerica-east1.run.app/api'
+  const API_URL = 'http://192.168.0.80:3001/api'
 
   const fetchStats = async () => {
     try {

@@ -13,7 +13,7 @@ const ProductManager = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   
-  const API_URL = 'https://tigre-backend-195623852400.southamerica-east1.run.app/api'
+  const API_URL = 'http://192.168.0.80:3001/api'
   
   const fetchProducts = async () => {
     try {

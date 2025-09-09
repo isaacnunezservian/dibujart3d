@@ -41,7 +41,7 @@ export default function Hero() {
 
   const handleCategoryClick = (id: number) => {
     console.log('Categoría seleccionada:', id);
-    axios.get(`https://tigre-backend-195623852400.southamerica-east1.run.app/api/categories/${id}`)
+    axios.get(`http://192.168.0.80:3001/api/categories/${id}`)
       .then(response => {
         setSelectedCategory(response.data.data);
         console.log('Productos de la categoría seleccionada:', response.data.data);
@@ -53,7 +53,7 @@ export default function Hero() {
   };
 
   useEffect(() => {
-    axios.get('https://tigre-backend-195623852400.southamerica-east1.run.app/api/categories')
+    axios.get('http://192.168.0.80:3001/api/categories')
       .then(response => {
         setCategories(response.data.data);
         console.log('Categorías obtenidas:', response.data);
