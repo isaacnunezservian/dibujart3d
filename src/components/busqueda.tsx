@@ -3,8 +3,9 @@ import Search from "./ui/search.jsx";
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import { motion } from "motion/react";
-import { PaperAirplaneIcon } from "@heroicons/react/16/solid";
-import logo from "../assets/Logo.svg"
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import logo from "../assets/Logo.svg";
+import { Link } from 'react-router-dom';
 
 // Tipo para los productos
 type Product = {
@@ -47,7 +48,7 @@ export default function Busqueda() {
   const [active, setActive] = useState<string[] | null>(null);
 
   useEffect(() => {
-    axios.get<ApiResponse>(`http://192.168.0.80:3001/api/products/`)
+    axios.get<ApiResponse>(`https://tigre-backend-195623852400.southamerica-east1.run.app/api/products/`)
     .then(response => {
       const products = response.data.data || response.data;
       setAllProducts(products);
@@ -83,13 +84,28 @@ export default function Busqueda() {
   }, [busqueda, allProducts]);
 
   return (
-
-    // Fondo con gradiente sutil usando tu paleta
     <div className="flex flex-col items-center justify-center py-10 bg-gradient-to-br from-white via-hunyadi-yellow-900 to-white dark:from-night dark:via-night-400 dark:to-night">
+      {/* Barra de navegación mejorada */}
+      <div className="w-full max-w-6xl flex justify-end px-4 mb-4">
+        <Link 
+          to="/tigre" 
+          className="group flex items-center gap-2 px-5 py-3 text-base font-semibold text-white transition-all duration-300 
+                    bg-gradient-to-r from-off-red-600 via-red-300 to-red-100  bg-size-200 bg-pos-0 
+                    rounded-lg shadow-lg hover:shadow-off-red/50 hover:bg-pos-100 
+                    transform hover:scale-105 active:scale-95 focus:outline-none"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 transition-transform group-hover:rotate-45">
+            <path fillRule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 0 0-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 0 0-2.282.819l-.922 1.597a1.875 1.875 0 0 0 .432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 0 0 0 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 0 0-.432 2.385l.922 1.597a1.875 1.875 0 0 0 2.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.986.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 0 0 2.28-.819l.923-1.597a1.875 1.875 0 0 0-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 0 0 0-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 0 0-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 0 0-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 0 0-1.85-1.567h-1.843ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clipRule="evenodd" />
+          </svg>
+          Ir a Panel de Administrador
+        </Link>
+      </div>
+      
       <div className="flex flex-col items-center justify-center mb-10">
         <div>
           <img src={logo} alt="Logo" className="w-24 h-24 my-8 md:w-32 md:h-32" />
         </div>
+        
         <TypewriterEffectPremium words={words} />
         <div className="flex flex-col mt-10 space-x-0 space-y-4 md:flex-row md:space-y-0 md:space-x-4">
           <Search busqueda={busqueda} setBusqueda={setBusqueda} />
@@ -112,25 +128,37 @@ export default function Busqueda() {
                 className="p-6 transition-all duration-300 transform bg-white border-2 shadow-lg cursor-pointer border-hunyadi-yellow-300 rounded-xl hover:shadow-xl hover:scale-105 dark:bg-night-800 dark:border-night-600" 
                 onClick={() => handleClick(producto.id, producto.colors)}
               >
-                <h3 className="mb-3 text-lg font-bold text-black dark:text-white">
-                  {producto.name}
-                </h3>
-                <div className="mb-3">
-                  <p className="mb-2 text-sm font-medium text-night-600 dark:text-night-400">Colores del producto</p>
-                  <div className="flex flex-wrap gap-2">
-                    {producto.colors.map((color, index) => (
-                      <span 
-                        key={index} 
-                        className="px-3 py-1 text-xs font-semibold text-white transition-shadow duration-200 rounded-full shadow-md bg-gradient-to-r from-poppy to-off-red hover:shadow-lg"
-                      >
-                        {color}
-                      </span>
-                    ))}
+                <div className="flex items-start gap-4">
+                  {/* Imagen del producto */}
+                  <div className="flex-shrink-0 w-12 h-12">
+                    {producto.imagePath ? (
+                      <img 
+                        src={producto.imagePath} 
+                        alt={producto.name}
+                        className="object-cover w-12 h-12 border border-gray-200 rounded-lg"
+                      />
+                    ) : (
+                      <div className="w-12 h-12"></div>
+                    )}
+                  </div>
+                  
+                  {/* Contenido del producto */}
+                  <div className="flex-grow min-w-0">
+                    <h3 className="mb-3 text-lg font-bold text-black dark:text-white">
+                      {producto.name}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {producto.colors.map((color, index) => (
+                        <span 
+                          key={index} 
+                          className="px-3 py-1 text-xs font-semibold text-white transition-shadow duration-200 rounded-full shadow-md bg-gradient-to-r from-poppy to-off-red hover:shadow-lg"
+                        >
+                          {color}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <p className="text-xs text-night-500 dark:text-night-400">
-                  ID: {producto.id} • Categoría: {producto.categoryId}
-                </p>
               </div>
             ))}
           </div>

@@ -15,7 +15,7 @@ const AdminLayout = ({ children, onLogout }: AdminLayoutProps) => {
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-poppy">DibujArt3D Admin</h1>
+              <h1 className="text-2xl font-bold text-poppy" onClick={onLogout}>Volver a Inventario</h1>
               <nav className="flex ml-8 space-x-8">
                 <Link
                   to="/tigre"
@@ -25,7 +25,7 @@ const AdminLayout = ({ children, onLogout }: AdminLayoutProps) => {
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  Dashboard
+                  Panel de Admin
                 </Link>
                 {/* <Link
                   to="/tigre/products"
@@ -57,12 +57,12 @@ const AdminLayout = ({ children, onLogout }: AdminLayoutProps) => {
               >
                 Ver Catálogo
               </Link> */}
-              <button
+              {/* <button
                 onClick={onLogout}
                 className="px-4 py-2 text-sm font-medium text-white transition-colors rounded-lg bg-poppy hover:bg-off-red"
               >
                 Cerrar Sesión
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

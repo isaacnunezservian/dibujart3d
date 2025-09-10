@@ -18,7 +18,7 @@ const CategoryForm = ({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   
-  const API_URL = 'http://192.168.0.80:3001/api'
+  const API_URL = 'https://tigre-backend-195623852400.southamerica-east1.run.app/api'
 
   useEffect(() => {
     if (category) {
@@ -144,7 +144,7 @@ const CategoryManager = () => {
   const [editCategory, setEditCategory] = useState<Category | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   
-  const API_URL = 'http://192.168.0.80:3001/api'
+  const API_URL = 'https://tigre-backend-195623852400.southamerica-east1.run.app/api'
   
   const fetchCategories = async () => {
     try {

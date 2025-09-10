@@ -1,4 +1,4 @@
-import type { Product, MonoProduct, MultiProduct, ProductItem, ProductGroup } from '../types'
+import type { Product, ProductItem, ProductGroup } from '../types'
 
 /**
  * Determina si varios productos forman un multiproducto basado en:

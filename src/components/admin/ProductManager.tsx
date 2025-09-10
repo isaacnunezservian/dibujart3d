@@ -9,11 +9,10 @@ const ProductManager = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [showForm, setShowForm] = useState(false)
-  const [editProduct, setEditProduct] = useState<Product | null>(null)
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
   
-  const API_URL = 'http://192.168.0.80:3001/api'
+  const API_URL = 'https://tigre-backend-195623852400.southamerica-east1.run.app/api'
   
   const fetchProducts = async () => {
     try {
@@ -65,20 +64,19 @@ const ProductManager = () => {
   }
   
   const openEditForm = (product: Product) => {
-    setEditProduct(product)
+    setEditingProduct(product)
     setShowForm(true)
   }
   
   const closeForm = () => {
     setShowForm(false)
-    setEditProduct(null)
+    setEditingProduct(null)
   }
 
   // Filtrar productos
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = !selectedCategory || product.categoryId.toString() === selectedCategory
-    return matchesSearch && matchesCategory
+    return matchesSearch
   })
   
   return (
@@ -142,12 +140,12 @@ const ProductManager = () => {
               </svg>
               <h3 className="mt-2 text-sm font-medium text-gray-900">No hay productos</h3>
               <p className="mt-1 text-sm text-gray-500">
-                {searchTerm || selectedCategory 
-                  ? 'No se encontraron productos con los filtros aplicados'
+                {searchTerm 
+                  ? 'No se encontraron productos con el término de búsqueda'
                   : 'Comienza creando tu primer producto'
                 }
               </p>
-              {!searchTerm && !selectedCategory && (
+              {!searchTerm && (
                 <div className="mt-6">
                   <button
                     onClick={() => setShowForm(true)}
@@ -258,7 +256,22 @@ const ProductManager = () => {
         </div>
       )}
 
-  
+      {/* Product Form Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
+            <ProductForm 
+              product={editingProduct} 
+              categories={categories}
+              onSubmitSuccess={() => {
+                closeForm();
+                fetchProducts(); // Recargar productos después de guardar
+              }}
+              onCancel={closeForm}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

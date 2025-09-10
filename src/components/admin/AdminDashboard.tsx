@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   const [showProductForm, setShowProductForm] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
 
-  const API_URL = 'http://192.168.0.80:3001/api'
+  const API_URL = 'https://tigre-backend-195623852400.southamerica-east1.run.app/api'
 
   const fetchStats = async () => {
     try {
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Panel de Administración</h1>
+        <h1 className="text-3xl font-bold text-gray-600">Panel de Administración</h1>
         <p className="mt-2 text-gray-600">
           Gestiona tu inventario de productos
         </p>
@@ -242,12 +242,12 @@ const AdminDashboard = () => {
               to="/"
               className="relative p-4 text-center transition-all transform bg-gray-600 rounded-lg group hover:bg-gray-700 hover:scale-105"
             >
-              <div className="text-white">
+              <div className="text-white cursor-pointer..">
                 <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                <p className="font-medium">Volver a  Inventario</p>
+                <p className="font-medium cursor-pointer">Volver a  Inventario</p>
               </div>
             </Link>
           </div>
@@ -258,14 +258,14 @@ const AdminDashboard = () => {
       {showProductForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center w-full h-full overflow-y-auto bg-gray-600 bg-opacity-50">
           <div className="relative w-full max-w-2xl max-h-screen mx-4 overflow-y-auto bg-white rounded-lg shadow-xl">
-            <div className="flex items-center justify-between p-6 border-b">
+            {/* <div className="flex items-center justify-between p-6 border-b">
               <h2 className="text-xl font-bold text-gray-900">
                 Nuevo Producto
               </h2>
               <button onClick={handleProductFormClose} className="text-gray-400 hover:text-gray-500">
                 <span className="text-2xl">&times;</span>
               </button>
-            </div>
+            </div> */}
             <div className="p-6">
               <ProductForm
                 product={null}

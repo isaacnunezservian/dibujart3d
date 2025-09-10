@@ -1,1 +1,35 @@
-hola desde frontend
+Necesito implementar la funcionalidad de edición de productos en el panel de administración. Actualmente existe la opción en la interfaz pero no funciona.
+
+**Contexto:**
+- Aplicación React con TypeScript
+- El componente ProductForm.tsx ya existe y se usa para crear productos
+- Existe un ProductManager.tsx que maneja la lista de productos
+- La API del backend ya tiene el endpoint PUT /api/products/:id implementado
+
+**Requisitos:**
+1. Modificar ProductForm.tsx para soportar modo edición:
+   - Detectar cuando se está editando (props initialProduct existe)
+   - En modo edición, solo permitir editar nombre y colores
+   - NO permitir cambiar imagen ni categoría en edición
+   - Usar PUT request con JSON (no FormData) para updates
+
+2. La lógica de submit debe ser:
+   - Si es creación: usar POST with FormData (lógica actual)
+   - Si es edición: usar PUT with JSON solo con { name, colors }
+
+3. El endpoint de edición espera:
+   - URL: PUT /api/products/:id
+   - Body: { name: string, colors: string } // colors como JSON string
+   - Content-Type: application/json
+
+4. Respuesta esperada del backend:
+   ```json
+   { "success": true, "data": Product, "message": "Product updated successfully" }
+
+   Cambios mínimos solicitados:
+
+No cambiar la estructura del componente
+Reutilizar la lógica existente
+Solo añadir la detección de modo edición y el manejo del PUT request
+Mantener el mismo patrón de manejo de errores
+¿Puedes implementar estos cambios en ProductForm.tsx manteniendo la funcionalidad existente de creación intacta?
