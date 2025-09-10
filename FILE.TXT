@@ -1,9 +1,0 @@
-Dame la solución haciendo cambios mínimos, no estructurales.
-
-Necesito hacer un cambio en la cración de productos. En el form de elección de categoría necesito las siguientes posibilidades:
-1.La opción nueva categoría(Esto crea automáticamente una nueva categoría, con su respectiva imágen) Va arriba de todo
-2. La opcion de producto con leyenda "sin categoría" en react. En este caso en el sistema se comporatará como un producto que tiene el mismo nombre e imagen que su categoría, tratándose de una categoría con un solo producto. 
-3. Luego de estas dos opciones primeras se mostrarán todas las categorías existentes, para asociar mi nuevo producto a una de ella(como funciona actualmente)
-
-
-Se borra la opción que existía  antes(independientemente) de "+Crear nueva categoría"

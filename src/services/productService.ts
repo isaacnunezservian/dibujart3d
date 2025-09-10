@@ -44,6 +44,7 @@ export class ProductService {
     try {
       // Si no hay categoryId, crear una nueva categoría con el mismo nombre
       let finalCategoryId: number;
+      let finalImagePath = data.imagePath;
       
       if (!data.categoryId) {
         // Importar categoryService aquí para evitar dependencias circulares
@@ -60,14 +61,26 @@ export class ProductService {
         finalCategoryId = newCategory.id;
         logger.info(`Created new category '${newCategory.title}' with ID: ${finalCategoryId}`);
       } else {
+        // Si se proporciona categoryId, obtener la categoría existente y usar su imagen
+        const existingCategory = await prisma.category.findUnique({
+          where: { id: data.categoryId }
+        });
+        
+        if (!existingCategory) {
+          throw new Error(`Category with ID ${data.categoryId} not found`);
+        }
+        
         finalCategoryId = data.categoryId;
+        // Usar la imagen de la categoría existente en lugar de la del producto
+        finalImagePath = existingCategory.header;
+        logger.info(`Using existing category '${existingCategory.title}' image: ${finalImagePath}`);
       }
       
       const product = await prisma.product.create({
         data: {
           name: data.name,
           colors: data.colors,
-          imagePath: data.imagePath || null,
+          imagePath: finalImagePath || null,
           categoryId: finalCategoryId // Usar la categoría existente o la nueva
         },
         include: {
@@ -83,52 +96,45 @@ export class ProductService {
     }
   }
 
-  // ✅ UPDATED: Actualizar producto y verificar categoría huérfana
+  // ✅ UPDATED: Actualizar producto (edición básica: solo nombre y colores)
   async updateProduct(id: number, data: UpdateProductData) {
     try {
-      // 1. Obtener la información actual del producto para verificar la categoría
-      let oldCategoryId: number | null = null;
-      
-      if (data.categoryId) {
-        const currentProduct = await prisma.product.findUnique({
-          where: { id },
-          select: { categoryId: true }
-        });
-        
-        if (currentProduct && currentProduct.categoryId !== data.categoryId) {
-          oldCategoryId = currentProduct.categoryId;
-        }
-      }
-
-      // 2. Actualizar el producto
-      const product = await prisma.product.update({
+      // Verificar que el producto existe
+      const existingProduct = await prisma.product.findUnique({
         where: { id },
-        data: {
-          ...(data.name && { name: data.name }),
-          ...(data.colors && { colors: data.colors }),
-          ...(data.categoryId && { categoryId: data.categoryId }),
-          ...(data.imagePath !== undefined && { imagePath: data.imagePath }) 
-        },
         include: { category: true }
       });
 
-      logger.info(`Updated product with ID: ${id}`);
-      
-      // 3. Si cambiamos de categoría, verificar si la anterior quedó sin productos
-      if (oldCategoryId) {
-        const remainingProducts = await prisma.product.count({
-          where: { categoryId: oldCategoryId }
+      if (!existingProduct) {
+        throw new Error(`Product with id ${id} not found`);
+      }
+
+      // Si se está cambiando el nombre, verificar que no exista otro producto con ese nombre
+      if (data.name && data.name !== existingProduct.name) {
+        const duplicateProduct = await prisma.product.findFirst({
+          where: { 
+            name: data.name,
+            id: { not: id }
+          }
         });
 
-        if (remainingProducts === 0) {
-          logger.info(`Eliminando categoría ID: ${oldCategoryId} por no tener productos asociados después de actualización`);
-          await prisma.category.delete({
-            where: { id: oldCategoryId }
-          });
-          logger.info(`Categoría ${oldCategoryId} eliminada automáticamente`);
+        if (duplicateProduct) {
+          throw new Error(`Product with name "${data.name}" already exists`);
         }
       }
-      
+
+      // Actualizar solo nombre y colores (edición básica)
+      const updateData: any = {};
+      if (data.name) updateData.name = data.name;
+      if (data.colors) updateData.colors = data.colors;
+
+      const product = await prisma.product.update({
+        where: { id },
+        data: updateData,
+        include: { category: true }
+      });
+
+      logger.info(`Updated product: ${product.name} (ID: ${id})`);
       return product;
     } catch (error) {
       logger.error(`Error updating product with ID ${id}`, error as Error);

@@ -70,10 +70,15 @@ export const deleteCategory = asyncHandler(async (req: Request, res: Response) =
   });
 });
 
-// Crear categoría rápida desde el formulario de producto
+// Crear categoría rápida desde el formulario de producto (OPCIÓN 1)
 export const createCategoryQuick = asyncHandler(async (req: Request, res: Response) => {
+  console.log('=== CREATE CATEGORY QUICK DEBUG ===');
+  console.log('Request body:', req.body);
+  console.log('Request file:', req.file);
+  console.log('==================================');
+
   // Validación básica
-  if (!req.body.title) {
+  if (!req.body.title || req.body.title.trim() === '') {
     return res.status(400).json({
       success: false,
       error: 'El título de la categoría es requerido'
@@ -91,11 +96,12 @@ export const createCategoryQuick = asyncHandler(async (req: Request, res: Respon
     } catch (error) {
       logger.error('Error uploading category image:', error as Error);
       // Continuar sin imagen
+      header = null;
     }
   }
   
   const validatedData = createCategorySchema.parse({
-    title: req.body.title,
+    title: req.body.title.trim(),
     header
   });
   
@@ -117,6 +123,8 @@ export const createCategoryQuick = asyncHandler(async (req: Request, res: Respon
         error: 'Ya existe una categoría con ese título'
       });
     }
+    
+    logger.error('Error creating category quickly:', error);
     throw error;
   }
 });

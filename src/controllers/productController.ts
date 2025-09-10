@@ -54,8 +54,11 @@ export const createProduct = asyncHandler(async (req: Request, res: Response) =>
       parsedBody.colors = JSON.parse(req.body.colors);
     } catch (error) {
       // Fallback to comma-separated string
-      parsedBody.colors = req.body.colors.split(',').map((color: string) => color.trim());
+      parsedBody.colors = req.body.colors.split(',').map((color: string) => color.trim()).filter((color: string) => color.length > 0);
     }
+  } else if (!req.body.colors || req.body.colors.length === 0) {
+    // Si no hay colores, usar array vacío (para opción 1: nueva categoría)
+    parsedBody.colors = [];
   }
   
   // ✅ NUEVO: Convert categoryId from string to number if provided
@@ -112,58 +115,86 @@ export const updateProduct = asyncHandler(async (req: Request, res: Response) =>
   const { id } = productParamsSchema.parse(req.params);
   
   console.log('=== UPDATE PRODUCT DEBUG ===');
+  console.log('Content-Type:', req.headers['content-type']);
   console.log('Raw request body:', req.body);
   console.log('Files:', req.file);
   console.log('============================');
   
-  // Parse data from FormData strings
   let parsedBody = { ...req.body };
   
-  // Parse colors from JSON string if needed
-  if (typeof req.body.colors === 'string') {
-    try {
-      parsedBody.colors = JSON.parse(req.body.colors);
-    } catch (error) {
-      // Fallback to comma-separated string
-      parsedBody.colors = req.body.colors.split(',').map((color: string) => color.trim());
-    }
-  }
+  // Determinar si es FormData o JSON
+  const isFormData = req.headers['content-type']?.includes('multipart/form-data');
+  const isJSON = req.headers['content-type']?.includes('application/json');
   
-  // ✅ NUEVO: Convert categoryId from string to number
-  if (typeof req.body.categoryId === 'string') {
-    parsedBody.categoryId = parseInt(req.body.categoryId, 10);
-  }
-  
-  // ✅ PROCESAR IMAGEN SI HAY UNA NUEVA
-  if (req.file) {
-    try {
-      console.log('📸 Processing image update...');
-      parsedBody.imagePath = await uploadImageToSupabase(req.file, 'productos');
-      console.log('✅ Image uploaded successfully:', parsedBody.imagePath);
-    } catch (error) {
-      console.error('❌ Error uploading image:', error);
-      // No agregar imagePath si falla
-    }
-  }
-  
-  console.log('Parsed body before validation:', parsedBody);
-  
-  try {
-    const validatedData = updateProductSchema.parse(parsedBody);
-    console.log('✅ Update validation successful:', validatedData);
+  if (isJSON) {
+    // ✅ MODO JSON (edición básica desde frontend)
+    console.log('📝 Processing JSON update (basic edit)');
     
+    // Para JSON, colors viene como string que necesita ser parseado
+    if (typeof req.body.colors === 'string') {
+      try {
+        parsedBody.colors = JSON.parse(req.body.colors);
+      } catch (error) {
+        console.error('Error parsing colors JSON:', error);
+        parsedBody.colors = [];
+      }
+    }
+    
+    // Solo permitir name y colors en modo JSON
+    const updateData: any = {};
+    if (parsedBody.name) updateData.name = parsedBody.name;
+    if (parsedBody.colors) updateData.colors = parsedBody.colors;
+    
+    const validatedData = updateProductSchema.parse(updateData);
     const product = await productService.updateProduct(id, validatedData);
     
-    logger.info(`Product updated: ${product.name}`);
+    logger.info(`Product updated (JSON mode): ${product.name}`);
     
     res.json({
       success: true,
       data: product,
       message: 'Product updated successfully'
     });
-  } catch (validationError) {
-    console.error('❌ Update validation error:', validationError);
-    throw validationError;
+    
+  } else {
+    // ✅ MODO FORMDATA (actualización completa)
+    console.log('📄 Processing FormData update (full edit)');
+    
+    // Parse colors from JSON string if needed
+    if (typeof req.body.colors === 'string') {
+      try {
+        parsedBody.colors = JSON.parse(req.body.colors);
+      } catch (error) {
+        parsedBody.colors = req.body.colors.split(',').map((color: string) => color.trim());
+      }
+    }
+    
+    // Convert categoryId from string to number
+    if (typeof req.body.categoryId === 'string') {
+      parsedBody.categoryId = parseInt(req.body.categoryId, 10);
+    }
+    
+    // Process image if there's a new one
+    if (req.file) {
+      try {
+        console.log('📸 Processing image update...');
+        parsedBody.imagePath = await uploadImageToSupabase(req.file, 'productos');
+        console.log('✅ Image uploaded successfully:', parsedBody.imagePath);
+      } catch (error) {
+        console.error('❌ Error uploading image:', error);
+      }
+    }
+    
+    const validatedData = updateProductSchema.parse(parsedBody);
+    const product = await productService.updateProduct(id, validatedData);
+    
+    logger.info(`Product updated (FormData mode): ${product.name}`);
+    
+    res.json({
+      success: true,
+      data: product,
+      message: 'Product updated successfully'
+    });
   }
 });
 

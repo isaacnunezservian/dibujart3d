@@ -26,6 +26,9 @@ router.post('/', uploadSingle, createProduct);
 // PUT /products/:id - Update product (with categoryId and multer for form-data)
 router.put('/:id', uploadSingle, updateProduct);
 
+// PATCH /products/:id - Update product basic info (JSON only, no file upload)
+router.patch('/:id', updateProduct);
+
 // DELETE /products/:id - Delete product
 router.delete('/:id', deleteProduct);
 
