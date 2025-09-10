@@ -108,7 +108,7 @@ export const filterProductItems = (items: ProductItem[], searchTerm: string): Pr
     } else {
       // Para multiproductos, buscar en el nombre del grupo y en productos individuales
       const groupMatches = normalizeText(item.displayName).includes(normalizedSearch)
-      const productMatches = item.products.some(product => 
+      const productMatches = item.products.some((product: ProductItem) => 
         normalizeText(product.name).includes(normalizedSearch)
       )
       return groupMatches || productMatches
@@ -136,7 +136,7 @@ export const filterProductItemsByCategory = (items: ProductItem[], categoryId: n
     if (item.type === 'mono') {
       return item.categoryId === categoryId
     } else {
-      return item.products.some(product => product.categoryId === categoryId)
+      return item.products.some((product: ProductItem) => product.categoryId === categoryId)
     }
   })
 }

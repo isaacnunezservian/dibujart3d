@@ -200,7 +200,7 @@ const ProductManager = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-wrap max-w-xs gap-1">
-                          {product.colors.slice(0, 3).map((color, idx) => (
+                          {product.colors.slice(0, 3).map((color: string, idx: number) => (
                             <span
                               key={idx}
                               className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800"
