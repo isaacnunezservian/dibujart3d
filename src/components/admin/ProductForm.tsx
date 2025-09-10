@@ -21,7 +21,7 @@ const ProductForm = ({
   const [colors, setColors] = useState<string[]>(product?.colors || [])
   const [categoryId, setCategoryId] = useState<number>(product?.categoryId || 0)
   const [image, setImage] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string | undefined>(product?.imagePath)
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(product?.imagePath || undefined)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   
@@ -49,7 +49,7 @@ const ProductForm = ({
       setName(product.name)
       setColors(product.colors)
       setCategoryId(product.categoryId)
-      setPreviewUrl(product.imagePath)
+      setPreviewUrl(product.imagePath || undefined)
     }
   }, [product])
   

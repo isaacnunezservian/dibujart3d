@@ -37,7 +37,7 @@ export const extractSharedName = (names: string[]): string => {
 /**
  * Agrupa productos por imagen compartida y determina multiproductos
  */
-export const groupProductsByImage = (products: Product[]): ProductGroup[] => {
+export const groupProductsByImage = (products: Product[]): Array<{sharedImage: string, sharedNameBase: string, products: Product[]}> => {
   const groups = new Map<string, Product[]>()
   
   // Agrupar por imagePath (o por 'no-image' si no tienen imagen)
@@ -72,16 +72,20 @@ export const processProductsToItems = (products: Product[]): ProductItem[] => {
         type: 'mono' as const,
         displayImage: product.imagePath || '',
         displayName: product.name
-      }
+      } as ProductItem
     } else {
       // Multiproducto
       return {
         type: 'multi' as const,
         id: `multi-${index}-${group.sharedImage.split('/').pop() || 'noimg'}`,
+        name: group.sharedNameBase || `Producto Múltiple ${index + 1}`,
         displayName: group.sharedNameBase || `Producto Múltiple ${index + 1}`,
         displayImage: group.sharedImage,
-        products: group.products
-      }
+        colors: [],
+        imagePath: group.sharedImage || null,
+        categoryId: group.products[0]?.categoryId || 0,
+        products: group.products.map(p => ({ ...p, type: 'mono' as const, displayName: p.name, displayImage: p.imagePath || '' }))
+      } as ProductItem
     }
   })
 }
@@ -104,13 +108,13 @@ export const filterProductItems = (items: ProductItem[], searchTerm: string): Pr
   
   return items.filter(item => {
     if (item.type === 'mono') {
-      return normalizeText(item.displayName).includes(normalizedSearch)
+      return normalizeText(item.displayName || item.name).includes(normalizedSearch)
     } else {
       // Para multiproductos, buscar en el nombre del grupo y en productos individuales
-      const groupMatches = normalizeText(item.displayName).includes(normalizedSearch)
-      const productMatches = item.products.some((product: ProductItem) => 
+      const groupMatches = normalizeText(item.displayName || item.name).includes(normalizedSearch)
+      const productMatches = item.products?.some((product: ProductItem) => 
         normalizeText(product.name).includes(normalizedSearch)
-      )
+      ) || false
       return groupMatches || productMatches
     }
   })
@@ -121,9 +125,13 @@ export const filterProductItems = (items: ProductItem[], searchTerm: string): Pr
  * Útil para estadísticas y conteos
  */
 export const getAllIndividualProducts = (items: ProductItem[]): Product[] => {
-  return items.flatMap(item => 
-    item.type === 'mono' ? [item] : item.products
-  )
+  return items.flatMap(item => {
+    if (item.type === 'mono') {
+      return [item as Product]
+    } else {
+      return item.products?.map(p => p as Product) || []
+    }
+  })
 }
 
 /**
@@ -136,7 +144,7 @@ export const filterProductItemsByCategory = (items: ProductItem[], categoryId: n
     if (item.type === 'mono') {
       return item.categoryId === categoryId
     } else {
-      return item.products.some((product: ProductItem) => product.categoryId === categoryId)
+      return item.products?.some((product: ProductItem) => product.categoryId === categoryId) || false
     }
   })
 }
